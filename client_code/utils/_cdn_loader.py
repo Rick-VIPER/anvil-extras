@@ -13,7 +13,15 @@ from ._component_helpers import _html_injector
 
 __version__ = "3.6.3"
 
-config = anvil.app.get_client_config("anvil_extras")
+# Web Worker compatibility: anvil.app is not available in worker context.
+# Worker code that transitively loads this module never executes the
+# load_asset() functions (those are only used by UI components), so the
+# config / cdn variables here are dead weight in worker context - default
+# them safely.
+try:
+    config = anvil.app.get_client_config("anvil_extras")
+except AttributeError:
+    config = {}
 cdn = bool(config.get("cdn", True))
 
 # Asset configuration specifying CSS, JS loading method, and access patterns
