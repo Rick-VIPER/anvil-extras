@@ -18,6 +18,7 @@ try:
     from anvil import Component as _Component
     from anvil import TextBox as _TextBox
     from anvil import app as _app
+
     _IS_WORKER = False
 except (ImportError, AttributeError):
     _Component = _TextBox = _app = None
@@ -122,9 +123,9 @@ def _spacing_property(a_b):
 
 
 if not _IS_WORKER:
-    _primary_color = (window.document.querySelector("meta[name=theme-color]") or {}).get(
-        "content", "#2196F3"
-    )
+    _primary_color = (
+        window.document.querySelector("meta[name=theme-color]") or {}
+    ).get("content", "#2196F3")
 else:
     _primary_color = "#2196F3"
 
