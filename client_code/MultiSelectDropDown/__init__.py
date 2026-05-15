@@ -339,8 +339,13 @@ class MultiSelectDropDown(MultiSelectDropDownTemplate):
             self._select_btn.width = "fit-content"
             self._dd._dom_node.style.minWidth = ""
         elif not val:
-            self._select_btn.width = 220
-            self._dd._dom_node.style.minWidth = "192px"
+            # VIPER fork default: fill container width to match Anvil DropDown.
+            # Upstream default was 220px fixed - changed here so MSDDs placed in
+            # ColumnPanels (the common case) span their column like a DropDown
+            # form input would. Options panel minWidth left empty so it
+            # auto-fits content rather than being clipped to 192px.
+            self._select_btn.width = "100%"
+            self._dd._dom_node.style.minWidth = ""
         else:
             self._select_btn.width = val
             self._dd._dom_node.style.minWidth = _css_length(val)
