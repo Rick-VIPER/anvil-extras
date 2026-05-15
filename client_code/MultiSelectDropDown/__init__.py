@@ -17,11 +17,41 @@ from .DropDown import DropDown
 __version__ = "3.6.3"
 
 _css = """
+/* VIPER fork: style MSDD trigger like an Anvil DropDown form input.
+   Wrapper fills its container, button uses underline border and
+   neutral colors (matches Anvil's standard DropDown look regardless
+   of host app's theme palette).                                    */
+.anvil-role-ae-ms-btn {
+    width: 100%;
+}
+
 .anvil-role-ae-ms-btn > button {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.42);
+    border-radius: 0;
+    background: transparent;
+    color: rgba(0,0,0,0.87);
+    text-transform: none;
+    text-align: left;
+    font-weight: 400;
+    font-size: 16px;
+    padding: 8px 0 4px;
+    min-height: 0;
+    box-shadow: none;
+}
+
+.anvil-role-ae-ms-btn > button:hover {
+    background: transparent;
+    border-bottom: 2px solid rgba(0,0,0,0.87);
+}
+
+.anvil-role-ae-ms-btn > button:focus {
+    outline: none;
+    border-bottom: 2px solid rgba(0,0,0,0.87);
 }
 
 .anvil-role-ae-ms-btn > button > span {
