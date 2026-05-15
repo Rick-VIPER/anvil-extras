@@ -7,9 +7,22 @@
 import random
 
 import anvil.js
-from anvil import Component as _Component
-from anvil import TextBox as _TextBox
-from anvil import app as _app
+
+# Web Worker compatibility: the anvil module in a Web Worker context
+# does not expose UI types (Component, TextBox, app). These helpers
+# (and the module-level browser variables below) are only used from
+# form/component code paths, never from worker code. Guard the imports
+# so that worker code can import this module transitively (e.g., via
+# anvil_extras.storage -> _cdn_loader) without crashing.
+try:
+    from anvil import Component as _Component
+    from anvil import TextBox as _TextBox
+    from anvil import app as _app
+    _IS_WORKER = False
+except (ImportError, AttributeError):
+    _Component = _TextBox = _app = None
+    _IS_WORKER = True
+
 from anvil.js import get_dom_node as _get_dom_node
 from anvil.js import window
 from anvil.js.window import Promise as _Promise
@@ -108,17 +121,23 @@ def _spacing_property(a_b):
     return property(getter, setter, None, a_b)
 
 
-_primary_color = (window.document.querySelector("meta[name=theme-color]") or {}).get(
-    "content", "#2196F3"
-)
+if not _IS_WORKER:
+    _primary_color = (window.document.querySelector("meta[name=theme-color]") or {}).get(
+        "content", "#2196F3"
+    )
+else:
+    _primary_color = "#2196F3"
 
 
 def _supports_relative_colors():
     return window.CSS.supports("color", "rgb(from white r g b / 0.2)")
 
 
-_tb = _TextBox()
-_tb_node = _get_dom_node(_tb)
+if not _IS_WORKER:
+    _tb = _TextBox()
+    _tb_node = _get_dom_node(_tb)
+else:
+    _tb = _tb_node = None
 
 
 def _get_color(value):
